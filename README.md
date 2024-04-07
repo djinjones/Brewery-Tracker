@@ -37,7 +37,7 @@ This is a group project for mapping out breweries and planning itineraries relat
 
 ## API
 
-
+[Open Brewery DB](https://api.openbrewerydb.org/breweries)
 
 ## References
 
@@ -46,7 +46,7 @@ This is a group project for mapping out breweries and planning itineraries relat
 
 ## Resources
 
-
+- [Open Brewery DB](https://www.openbrewerydb.org)
 - [Github markdown-badges](https://ileriayo.github.io/markdown-badges/)
 
 
