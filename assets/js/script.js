@@ -18,7 +18,8 @@ function getUserLocation() {
 
 function handleFormSubmit() {
     //We need to get the data from the form and send it through the fetch function
-    fetchBreweryData(city, parameter)
+    fetchBreweryData(city, parameter);
+    
 }
 function fetchBreweryData(city, parameter) {
     //We need to take the data inputed from the form and use it to search for breweies through the API
@@ -38,4 +39,6 @@ function addBreweryToDonelist() {
 
 
 
-searchForm.addEventListener('submit', function(){handleFormSubmit()})
+searchBtn.addEventListener('click', function(){
+    handleFormSubmit();
+})
