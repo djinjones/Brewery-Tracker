@@ -1,29 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Brewery Tracker</title>
     <script src="https://cdn.tailwindcss.com"></script>
+
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />
     <link rel="stylesheet" href="./assets/css/style.css"/>
+
 </head>
+
 <body>
-<nav>
+    <nav>
 
-</nav>
-   <main>
+    </nav>
+    <main>
 
-   </main> 
-    
-    
+        <article class="bq">
+            <img src='./assets/images/Screenshot 2024-04-09 191510.png'>
+        </article>
+    </main>
+
+
     <div id="searchBox">
+
         <h2 class="block font-medium leading-6 text-gray-900 text-xl">Search for a brewery!</h2>
         <form id="searchForm" class="flex flex-col w-96">
             <input type="text" id="searchBar" class=" rounded-md border-0 py-3 my-3 text-gray-900 ring-1 ring-inset ring-gray-300">
             <select class="rounded-sm py-3 my-3 border-slate-50 ring-1 ring-inset ring-gray-300" name="parameters" id="selectField">
+
                 <option value="by_name">name</option>
                 <option value="by_city">city</option>
                 <option value="by_state">state</option>
@@ -33,6 +42,7 @@
             <button class="py-3 my-3 rounded-sm border-slate-50 ring-1 ring-inset ring-gray-300" id="search-around-me-btn">Search Around Me</button>
 
         </form>
+
     </div>
     <br/>
     <div class="flex justify-center items-center h-screen"> <!-- This ensures full screen height and centers its children -->
@@ -42,13 +52,14 @@
     </div>
     
 
-<footer>
+    <footer>
 
-</footer>
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.3/dayjs.min.js"
-integrity="sha256-iu/zLUB+QgISXBLCW/mcDi/rnf4m4uEDO0wauy76x7U=" crossorigin="anonymous"></script>
-<script src="./assets/js/script.js"></script>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.3/dayjs.min.js"
+        integrity="sha256-iu/zLUB+QgISXBLCW/mcDi/rnf4m4uEDO0wauy76x7U=" crossorigin="anonymous"></script>
+    <script src="./assets/js/script.js"></script>
 </body>
+
 </html>
