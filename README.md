@@ -16,6 +16,29 @@
 
 This is a group project for mapping out breweries and planning itineraries related to it.
 
+## Acceptence Criteria
+
+User Story:
+As a full stack developer
+I want to create a site that uses https://www.openbrewerydb.org/ and a map API to 
+Show the nearest breweries to travelers
+
+When i visit the website,
+Then 
+
+It's done when the site integrates the Open Brewery DB API to fetch brewery data based on the user's location.
+It's done when the site uses a map API to display the location of the nearest breweries to the user.
+It's done when the site allows travelers to input their location or automatically detects their location to show nearby breweries.
+It's done when the site displays relevant information about each brewery, such as name, address, type, and contact details.
+It's done when the site provides a responsive and user-friendly interface for travelers to easily view and interact with the brewery information on both desktop and mobile devices.
+
+Amanda- CSS HTML
+Dan- Java Script
+Rinjee- Java Script
+Jonathan- Else
+
+
+
 ## Table of Contents
 
 - [ScreenShots](#screenshots)
