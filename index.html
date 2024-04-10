@@ -30,13 +30,20 @@
 
         <h2 class="block font-medium leading-6 text-gray-900 text-xl">Search for a brewery!</h2>
         <form id="searchForm" class="flex flex-col w-96">
-            <input type="text" id="searchBar" class=" rounded-md border-0 py-3 my-3 text-gray-900 ring-1 ring-inset ring-gray-300">
+            
+            
+            
             <select class="rounded-sm py-3 my-3 border-slate-50 ring-1 ring-inset ring-gray-300" name="parameters" id="selectField">
-
                 <option value="by_name">name</option>
                 <option value="by_city">city</option>
                 <option value="by_state">state</option>
+                <option value="by_dist">distance(closest)</option>
             </select>
+        
+            <input type="text" id="searchBar" class=" rounded-md border-0 py-3 my-3 text-gray-900 ring-1 ring-inset ring-gray-300" placeholder="Search by Name">
+            <button type="submit" class="py-3 my-3 rounded-sm border-slate-50 ring-1 ring-inset ring-gray-300" id="searchBtn">Search</button>
+        </form>
+    </div>
 
             <button type="submit" class="py-3 my-3 rounded-sm border-slate-50 ring-1 ring-inset ring-gray-300" id="searchBtn">Search</button>
             <button class="py-3 my-3 rounded-sm border-slate-50 ring-1 ring-inset ring-gray-300" id="search-around-me-btn">Search Around Me</button>
