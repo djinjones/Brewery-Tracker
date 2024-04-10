@@ -6,6 +6,8 @@
     <title>Brewery Tracker</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />
     <link rel="stylesheet" href="./assets/css/style.css"/>
 </head>
 <body>
@@ -18,7 +20,7 @@
     
     
     <div id="searchBox">
-        <h2 class="block font-medium leading-6 text-gray-900 text-xl"">Search for a brewery!</h2>
+        <h2 class="block font-medium leading-6 text-gray-900 text-xl">Search for a brewery!</h2>
         <form id="searchForm" class="flex flex-col w-96">
             <input type="text" id="searchBar" class=" rounded-md border-0 py-3 my-3 text-gray-900 ring-1 ring-inset ring-gray-300">
             <select class="rounded-sm py-3 my-3 border-slate-50 ring-1 ring-inset ring-gray-300" name="parameters" id="selectField">
@@ -26,13 +28,19 @@
                 <option value="by_city">city</option>
                 <option value="by_state">state</option>
             </select>
+
             <button type="submit" class="py-3 my-3 rounded-sm border-slate-50 ring-1 ring-inset ring-gray-300" id="searchBtn">Search</button>
+            <button class="py-3 my-3 rounded-sm border-slate-50 ring-1 ring-inset ring-gray-300" id="search-around-me-btn">Search Around Me</button>
+
         </form>
     </div>
-
-
-
-
+    <br/>
+    <div class="flex justify-center items-center h-screen"> <!-- This ensures full screen height and centers its children -->
+        <div id="map" class="h-96 w-3/4"> <!-- Adjust width (w-3/4) and height (h-96) classes as needed -->
+            <!-- Map will be injected here by Mapbox GL JS -->
+        </div>
+    </div>
+    
 
 <footer>
 

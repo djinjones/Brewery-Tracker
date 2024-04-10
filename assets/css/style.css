@@ -1,0 +1,14 @@
+
+/* Add your CSS here */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+#map {
+    position: relative; /* Change this from absolute to relative */
+    height: 400px; /* Adjust height as needed */
+    margin: 0 auto; /* Center the container horizontally */
+    width: 75%; /* Or set a fixed width, e.g., 600px */
+}
+
