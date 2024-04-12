@@ -1,23 +1,29 @@
 bq {
-    padding: 0%;
-    margin-left: auto;
-    margin-right: 10px;
-    width: 250vw;
-    height: 250vh;
+    */ padding: 0%;
+    */ margin-left: auto;
+    */ margin-right: 10px;
+    */ width: 250vw;
+    */ height: 250vh;
+    */
 }
 
 main {
-    width: 150vw;
-    display: flex;
     gap: 2rem;
+    background-image: url("./images/Preview.jpg");
+    background-repeat: no-repeat;
+    background-position-x: 40%, right;
+    background-size: 35% 35%;
+    min-height: 100vh;
+    min-width: 100vw;
 }
 
 /* Add your CSS here */
 html,
 body {
-    height: 100%;
+    height: 40%;
     margin: 0;
-    padding: 0;
+    padding: 10;
+
 }
 
 #map {
