@@ -98,8 +98,8 @@ function fetchBreweryData(parameter) {
     const baseAPIurl = 'https://api.openbrewerydb.org/v1/breweries';
     const fetchUrl = `${baseAPIurl}?${parameter}&per_page=15`
     const coords = JSON.parse(localStorage.getItem('coords'))
-    const longitude = coords[0];
-    const latitude = coords[1];
+    const longitude = coords[1];
+    const latitude = coords[0];
 
     if (parameter=="by_dist") {
         async function fetchByDist() {
