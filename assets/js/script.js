@@ -64,7 +64,7 @@ getUserLocation();
 function handleFormSubmit(event) {
 
     //We need to get the data from the form and send it through the fetch function
-    event.preventDefault(event);
+    event.preventDefault();
     let parameter = selectField.value;
     const searchValue = searchBar.value;
     parameter = `${parameter}=${searchValue}`
@@ -91,9 +91,43 @@ function fetchBreweryData(parameter) {
     }
 
     fetchOpenBreweryDB();
+    appendBreweryData();
 }
 
 function appendBreweryData() {
+    const breweryBox = document.querySelector('#brewery-box');
+    
+    const newDiv = document.createElement('div');
+    const newTitle = document.createElement('h2');
+    const newText = document.createElement('p');
+    const newWebsiteUrl = document.createElement('p');
+    const newLocation = document.createElement('p');
+    const newLocationLink = document.createElement('a')
+    const newLink = document.createElement('a');
+    const breweryData = JSON.parse(localStorage.getItem('brewery-data'));
+    const data = breweryData[0];
+
+    newDiv.classList.add("breweryBox");
+    newTitle.classList.add("breweryTitle", "custom-text");
+    newText.classList.add("breweryText", "custom-text");
+    newWebsiteUrl.classList.add("breweryUrl", "custom-text")
+    newLink.classList.add("breweryLink", "custom-text");
+    newLocation.classList.add("breryLocation", "custom-text");
+    newLocationLink.classList.add("breweryLocationLink", "custom-text")
+
+    newLink.textContent = " here ";
+    newLink.href = data.website_url;
+    newTitle.textContent = data.name;
+    newText.textContent = data.address_1 + " " + data.state + ", " + data.country;
+    newWebsiteUrl.textContent = "click" + newLink + "to visit their website.";
+    newLocationLink.textContent = " here ";
+    newLocationLink.href = `api.mapbox.com/geocoding/v5/mapbox.places/peets.json?proximity=${data.longitude},${data.latitude}&access_token=<pk.eyJ1IjoicmluamVlIiwiYSI6ImNsdXQ0ZWRjNjBvZTkybG85dTcxNjFudXgifQ.wuMqiIb0vQfJz3-r-ylGCA/>`
+    newLocation.textContent = "click" + newLocationLink + "to see on maps.";
+    
+    newDiv.append(newTitle, newText, newWebsiteUrl, newLink, newLocation, newLocationLink);
+    breweryBox.append(newDiv);
+
+
     //We need to take the data we got from the fetch and append it to our HTML document
 }
 
@@ -134,8 +168,8 @@ selectField.addEventListener('change', function(){
     }
 })
 
-searchBtn.addEventListener('click', function(){
-    handleFormSubmit();
+searchBtn.addEventListener('click', function(event){
+    handleFormSubmit(event);
 });
 
 // Attach the event listener to your button

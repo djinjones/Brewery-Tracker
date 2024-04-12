@@ -13,26 +13,17 @@
     <link rel="stylesheet" href="./assets/css/style.css"/>
 
 </head>
-
 <body>
     <nav>
-
     </nav>
     <main>
-
         <article class="bq">
             <img src='./assets/images/Screenshot 2024-04-09 191510.png'>
         </article>
-    </main>
-
-
     <div id="searchBox">
 
         <h2 class="block font-medium leading-6 text-gray-900 text-xl">Search for a brewery!</h2>
         <form id="searchForm" class="flex flex-col w-96">
-            
-            
-            
             <select class="rounded-sm py-3 my-3 border-slate-50 ring-1 ring-inset ring-gray-300" name="parameters" id="selectField">
                 <option value="by_name">name</option>
                 <option value="by_city">city</option>
@@ -44,23 +35,21 @@
             <button type="submit" class="py-3 my-3 rounded-sm border-slate-50 ring-1 ring-inset ring-gray-300" id="searchBtn">Search</button>
         </form>
     </div>
-
-            <button type="submit" class="py-3 my-3 rounded-sm border-slate-50 ring-1 ring-inset ring-gray-300" id="searchBtn">Search</button>
-            <button class="py-3 my-3 rounded-sm border-slate-50 ring-1 ring-inset ring-gray-300" id="search-around-me-btn">Search Around Me</button>
-
-        </form>
+    <div id="brewery-box">
 
     </div>
-    <br/>
+            <button type="submit" class="py-3 my-3 rounded-sm border-slate-50 ring-1 ring-inset ring-gray-300" id="searchBtn">Search</button>
+            <button class="py-3 my-3 rounded-sm border-slate-50 ring-1 ring-inset ring-gray-300" id="search-around-me-btn">Search Around Me</button>
+        </form>
+    </div>
+  </main>
     <div class="flex justify-center items-center h-screen"> <!-- This ensures full screen height and centers its children -->
         <div id="map" class="h-96 w-3/4"> <!-- Adjust width (w-3/4) and height (h-96) classes as needed -->
             <!-- Map will be injected here by Mapbox GL JS -->
         </div>
     </div>
     
-
     <footer>
-
     </footer>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
@@ -68,5 +57,4 @@
         integrity="sha256-iu/zLUB+QgISXBLCW/mcDi/rnf4m4uEDO0wauy76x7U=" crossorigin="anonymous"></script>
     <script src="./assets/js/script.js"></script>
 </body>
-
 </html>
