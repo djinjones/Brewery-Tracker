@@ -1,25 +1,32 @@
-
 bq {
     padding: 0%;
-    margin: 0;
-    border: solid 2px black;
-    width: 300px;
-    height: 200px;
-    display: right;
-    flex-wrap: wrap;
+    margin-left: auto;
+    margin-right: 10px;
+    width: 250vw;
+    height: 250vh;
+}
+
+main {
+    width: 150vw;
+    display: flex;
+    gap: 2rem;
 }
 
 /* Add your CSS here */
-html, body {
+html,
+body {
     height: 100%;
     margin: 0;
     padding: 0;
 }
+
 #map {
-    position: relative; /* Change this from absolute to relative */
-    height: 400px; /* Adjust height as needed */
-    margin: 0 auto; /* Center the container horizontally */
-    width: 75%; /* Or set a fixed width, e.g., 600px */
+    position: relative;
+    /* Change this from absolute to relative */
+    height: 400px;
+    /* Adjust height as needed */
+    margin: 0 auto;
+    /* Center the container horizontally */
+    width: 75%;
+    /* Or set a fixed width, e.g., 600px */
 }
-
-
