@@ -49,17 +49,38 @@ function showMap(lat, lng) {
     // Create a new map instance using Mapbox GL JS
     var map = new mapboxgl.Map({
         container: 'map', // The HTML element ID where you want the map to appear
-        style: 'mapbox://styles/mapbox/streets-v11', // The style of the map you want to use
+        style: 'mapbox://styles/mapbox/streets-v12', // The style of the map you want to use
         center: [lng, lat], // Starting position [longitude, latitude]
         zoom: 12 // Starting zoom level
     });
 
     // Add navigation controls to the map (optional)
+    
+    var directions = new MapboxDirections({
+        accessToken: mapboxgl.accessToken,
+        unit: 'metric', // Use 'metric' or 'imperial' for unit systems
+        profile: 'mapbox/driving' // Specify the routing profile
+    });
+    map.addControl(directions, 'top-left');
     map.addControl(new mapboxgl.NavigationControl());
+
+    var geolocate = new mapboxgl.GeolocateControl({
+        positionOptions: {
+            enableHighAccuracy: true
+        },
+        trackUserLocation: true,
+        showUserLocation: true
+    });
+
+    map.addControl(geolocate);
+    geolocate.on('geolocate', function(e) {
+        var lng = e.coords.longitude;
+        var lat = e.coords.latitude;
+        directions.setOrigin([lng, lat]); // Set the origin dynamically
+    });
+
 }
 
-// Usage:
-getUserLocation();
 
 
 function handleFormSubmit(event) {
@@ -202,6 +223,9 @@ $(document).ready(function() {
     } else {
         console.log('Map container is not found.');
     }
+});
+document.addEventListener('DOMContentLoaded', function() {
+    getUserLocation();  // Automatically fetch and display the user's location on load
 });
 
 
