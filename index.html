@@ -8,12 +8,15 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
-    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.0/mapbox-gl-directions.css" type="text/css">
+    <link rel="stylesheet"
+        href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.0/mapbox-gl-directions.css"
+        type="text/css">
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />
 
-    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.0/mapbox-gl-directions.js"></script>
-    <link rel="stylesheet" href="./assets/css/style.css"/>
+    <script
+        src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.0/mapbox-gl-directions.js"></script>
+    <link rel="stylesheet" href="./assets/css/style.css" />
 
 
 </head>
@@ -23,26 +26,25 @@
     </nav>
     <main>
         <article class="bq">
-            <img src='./assets/images/Preview.jpg'>
         </article>
 
         <form id="searchForm" class="flex flex-col w-96">
-                <h2 class="block font-medium leading-6 text-gray-900 text-xl">Search for a brewery!</h2>
-                <select class="rounded-sm py-3 my-3 border-slate-50 ring-1 ring-inset ring-gray-300" name="parameters"
-                    id="selectField">
-                    <option value="by_name">name</option>
-                    <option value="by_city">city</option>
-                    <option value="by_state">state</option>
-                </select>
+            <h2 class="block font-medium leading-6 text-gray-900 text-xl">Search for a brewery!</h2>
+            <select class="rounded-sm py-3 my-3 border-slate-50 ring-1 ring-inset ring-gray-300" name="parameters"
+                id="selectField">
+                <option value="by_name">name</option>
+                <option value="by_city">city</option>
+                <option value="by_state">state</option>
+            </select>
 
-                <input type="text" id="searchBar"
-                    class=" rounded-md border-0 py-3 my-3 text-gray-900 ring-1 ring-inset ring-gray-300"
-                    placeholder="Search by Name">
-                <button type="submit" class="py-3 my-3 rounded-sm border-slate-50 ring-1 ring-inset ring-gray-300"
-                    id="searchBtn">Search</button>
-                <button class="py-3 my-3 rounded-sm border-slate-50 ring-1 ring-inset ring-gray-300"
-                    id="search-around-me-btn">Breweries Around Me</button>
-            </form>
+            <input type="text" id="searchBar"
+                class=" rounded-md border-0 py-3 my-3 text-gray-900 ring-1 ring-inset ring-gray-300"
+                placeholder="Search by Name">
+            <button type="submit" class="py-3 my-3 rounded-sm border-slate-50 ring-1 ring-inset ring-gray-300"
+                id="searchBtn">Search</button>
+            <button class="py-3 my-3 rounded-sm border-slate-50 ring-1 ring-inset ring-gray-300"
+                id="search-around-me-btn">Breweries Around Me</button>
+        </form>
         </div>
         <div id="brewery-box">
 
@@ -54,20 +56,20 @@
     <!-- This ensures full screen height and centers its children -->
     <div id="map" class="h-96 w-3/4"> <!-- Adjust width (w-3/4) and height (h-96) classes as needed -->
         <!-- Map will be injected here by Mapbox GL JS -->
-        <div class="map relative h-32 w-32 ...">
-            <div class="absolute top-0 right-0 h-16 w-16 /div">
+        <div class="map relative h-20 w-20 ...">
+            <div class="absolute top-0 right-0 h-20 w-20 /div">
+            </div>
         </div>
-    </div>
     </div>
 
     <footer>
     </footer>
     <script src=" https://code.jquery.com/jquery-3.4.1.min.js">
-                </script>
-                <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
-                <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.3/dayjs.min.js"
-                    integrity="sha256-iu/zLUB+QgISXBLCW/mcDi/rnf4m4uEDO0wauy76x7U=" crossorigin="anonymous"></script>
-                <script src="./assets/js/script.js"></script>
+    </script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.3/dayjs.min.js"
+        integrity="sha256-iu/zLUB+QgISXBLCW/mcDi/rnf4m4uEDO0wauy76x7U=" crossorigin="anonymous"></script>
+    <script src="./assets/js/script.js"></script>
 </body>
 
 </html>
