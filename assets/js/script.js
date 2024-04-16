@@ -11,7 +11,6 @@ const searchForm = document.querySelector('#searchForm');
 const searchBtn = document.querySelector('#searchBtn');
 const searchBar = document.querySelector('#searchBar');
 const selectField = document.querySelector('#selectField');
-var map;
 
 function getUserLocation(callback) {
     callback = callback || function(lat, lng) {
@@ -41,27 +40,6 @@ function getUserLocation(callback) {
 
     navigator.geolocation.getCurrentPosition(success, error);
 }
-
-function initMapAndFetchBreweries() {
-    getUserLocation((lat, lng) => {
-        showMap(lat, lng);
-        fetchBreweriesNearby(lat, lng);
-    });
-}
-
-function showBreweriesOnMap(breweries, lat, lng) {
-    // Assume `map` is globally accessible or passed into this function
-    breweries.forEach(brewery => {
-        if (brewery.latitude && brewery.longitude) {
-            new mapboxgl.Marker()
-                .setLngLat([parseFloat(brewery.longitude), parseFloat(brewery.latitude)])
-                .setPopup(new mapboxgl.Popup().setText(`${brewery.name}`))
-                .addTo(map);
-        }
-    });
-}
-
-
 
 
 function showMap(lat, lng) {
@@ -163,8 +141,6 @@ function createMarkerElement(iconName) {
     return el;
 }
 
-
-
 function handleFormSubmit(event) {
 
     //We need to get the data from the form and send it through the fetch function
@@ -172,6 +148,7 @@ function handleFormSubmit(event) {
     let parameter = selectField.value;
     const searchValue = searchBar.value;
     parameter = `${parameter}=${searchValue}`
+    localStorage.setItem('currentIndex', 0)
     fetchBreweryData(parameter);
 }
 
@@ -220,56 +197,92 @@ function handleFormSubmit(event) {
 //     }
 // }
 function fetchBreweryData(parameter) {
-    const baseAPIurl = 'https://api.openbrewerydb.org/breweries';
-    const fetchUrl = `${baseAPIurl}?${parameter}&per_page=15`;
+    //We need to take the data inputed from the form and use it to search for breweies through the API
+    const baseAPIurl = 'https://api.openbrewerydb.org/v1/breweries';
+    const fetchUrl = `${baseAPIurl}?${parameter}&per_page=15`
+    const coords = JSON.parse(localStorage.getItem('coords'))
+    const longitude = coords[0];
+    const latitude = coords[1];
 
-    fetch(fetchUrl)
-        .then(response => {
-            if (!response.ok) throw new Error('Failed to fetch breweries');
-            return response.json();
-        })
-        .then(data => {
-            console.log('Fetched data:', data);
-            localStorage.setItem('brewery-data', JSON.stringify(data));
+    if (parameter=="by_dist") {
+        async function fetchByDist() {
+            try {
+                const response = await fetch(`${baseAPIurl}?by_dist=${longitude},${latitude}&per_page=15`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                localStorage.setItem('brewery-data', JSON.stringify(data)); 
+                console.log(data);
+                appendBreweryData();
+            } catch (error) {
+                console.error('Error fetching brewery data:', error);
+            }
+        }
+        fetchByDist();
+    } else {
+
+    async function fetchOpenBreweryDB() {
+        try {
+            const response = await fetch(fetchUrl);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            localStorage.setItem('brewery-data', JSON.stringify(data)); 
+            console.log(data);
             appendBreweryData();
-        })
-        .catch(error => console.error('Error during fetch:', error));
+        } catch (error) {
+            console.error('Error fetching brewery data:', error);
+        }
+    }
+    fetchOpenBreweryDB();
+    
+    }
 }
 
 
 
 
-
 function appendBreweryData() {
+    //We need to take the data we got from the fetch and append it to our HTML document
     const breweryBox = document.querySelector('#brewery-box');
     breweryBox.replaceChildren();
+    const breweryData = JSON.parse(localStorage.getItem('brewery-data'));
+    let index = 0
+    if (localStorage.getItem('currentIndex')) {
+        index = localStorage.getItem('currentIndex');
+    }
     
     const newDiv = document.createElement('div');
-    const newTitle = document.createElement('h2');
-    const newText = document.createElement('p');
+    const newTitle = document.createElement('h');
+    const newAddress = document.createElement('p');
+    const newAddress2 = document.createElement('p')
     const newWebsiteUrl = document.createElement('p');
     const newLocation = document.createElement('p');
     const newLocationLink = document.createElement('a')
     const newLink = document.createElement('a');
-    const breweryData = JSON.parse(localStorage.getItem('brewery-data'));
-    const data = breweryData[0];
+    
+    const data = breweryData[index];
 
     newDiv.classList.add("breweryBox");
     newTitle.classList.add("breweryTitle", "custom-text");
-    newText.classList.add("breweryText", "custom-text");
-    newWebsiteUrl.classList.add("breweryUrl", "custom-text")
+    newAddress.classList.add("breweryText", "custom-text");
+    newAddress.classList.add( "breweryText", "custom-text");
+    newWebsiteUrl.classList.add("breweryUrl", "custom-text");
     newLink.classList.add("breweryLink", "custom-text");
     newLocation.classList.add("breryLocation", "custom-text");
-    newLocationLink.classList.add("breweryLocationLink", "custom-text")
+    newLocationLink.classList.add("breweryLocationLink", "custom-text");
 
     newLink.textContent = "View website ";
     newLink.href = data.website_url;
     newTitle.textContent = data.name;
-    newText.textContent = data.address_1 + " " + data.state + ", " + data.country;
+    newAddress.textContent = data.address_1 
+    newAddress2.textContent = data.city + " " + data.state + ", " + data.country + " " + data.postal_code + " ";
     newLocationLink.textContent = "View Location ";
-    newLocationLink.href = `api.mapbox.com/geocoding/v5/mapbox.places/peets.json?proximity=${data.longitude},${data.latitude}&access_token=<pk.eyJ1IjoicmluamVlIiwiYSI6ImNsdXQ0ZWRjNjBvZTkybG85dTcxNjFudXgifQ.wuMqiIb0vQfJz3-r-ylGCA/>`
+    newLocationLink.href = `api.mapbox.com/geocoding/v5/mapbox.places/peets.json?proximity=${data.longitude},${data.latitude}&access_token=<pk.eyJ1IjoicmluamVlIiwiYSI6ImNsdXQ0ZWRjNjBvZTkybG85dTcxNjFudXgifQ.wuMqiIb0vQfJz3-r-ylGCA/>`;
     
-    newDiv.append(newTitle, newText, newWebsiteUrl, newLink, newLocation, newLocationLink);
+    newDiv.append(newTitle, newAddress, newAddress2, newWebsiteUrl, newLink, newLocation, newLocationLink);
     breweryBox.append(newDiv);
     //We need to take the data we got from the fetch and append it to our HTML document
 }
@@ -278,6 +291,10 @@ function appendBreweryData() {
 
 
 
+
+searchBtn.addEventListener('click', function(event){
+    handleFormSubmit(event);
+})
 
 selectField.addEventListener('change', function(){
     const selectedOption = selectField.value;
@@ -296,7 +313,7 @@ selectField.addEventListener('change', function(){
               searchBar.placeholder = 'Search by Name';
               break;
     }
-})
+});
 
 document.getElementById('search-around-me-btn').addEventListener('click', function() {
     if (!map) {
@@ -312,6 +329,12 @@ searchBtn.addEventListener('click', function(event) {
     handleFormSubmit(event);
 });
 
+// Attach the event listener to your button
+document.getElementById('search-around-me-btn').addEventListener('click', function() {
+    getUserLocation();
+    let parameter = "by_dist"
+    fetchBreweryData(parameter);
+});
 
 
 
@@ -322,6 +345,7 @@ $(document).ready(function() {
     } else {
         console.log('Map container is not found.');
     }
+    localStorage.setItem('currentIndex', 0)
 });
 // document.addEventListener('DOMContentLoaded', function() {
 //     getUserLocation();  // Automatically fetch and display the user's location on load
