@@ -219,7 +219,8 @@ function appendBreweryData() {
     newDiv.classList.add("breweryBox");
     newTitle.classList.add("breweryTitle", "custom-text");
     newAddress.classList.add("breweryText", "custom-text");
-    newAddress.classList.add( "breweryText", "custom-text");
+    newAddress.classList.add("breweryText", "custom-text");
+    newAddress2.classList.add("breweryText", "custom-text")
     newWebsiteUrl.classList.add("breweryUrl", "custom-text");
     newLink.classList.add("breweryLink", "custom-text");
     newLocation.classList.add("breryLocation", "custom-text");
@@ -238,7 +239,8 @@ function appendBreweryData() {
     
 }
 
-previousBtn.addEventListener('click', function(){
+previousBtn.addEventListener('click', function(event){
+    event.preventDefault();
     let index = localStorage.getItem('currentIndex');
     index--;
     if (index<0){index = 0}
@@ -248,7 +250,8 @@ previousBtn.addEventListener('click', function(){
     appendBreweryData();
 });
 
-nextBtn.addEventListener('click', function(){
+nextBtn.addEventListener('click', function(event){
+    event.preventDefault();
     let index = localStorage.getItem('currentIndex');
     index++;
     if (index<0){index = 0}
