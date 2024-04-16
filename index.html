@@ -12,11 +12,9 @@
         type="text/css">
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />
-    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.0/mapbox-gl-directions.js">
-    </script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.0/mapbox-gl-directions.js"> </script>
     <link rel="stylesheet" href="./assets/css/style.css" />
-    <script
-        src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.0/mapbox-gl-directions.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.0/mapbox-gl-directions.js"></script>
     <link rel="stylesheet" href="./assets/css/style.css" />
 
 </head>
@@ -50,6 +48,9 @@
             <img src="./assets/css/images/BrewQuest.png" alt="beer world">
         </article>
         <div id="brewery-box">
+
+        </div>
+        <div >
             <button id="previousBtn"
                 class="rounded-md border-3 py-3 my-3 text-gray-900 ring-1 ring-inset ring-gray-300 text-neutral-950 font-serif italic bg-amber-700">Previous</button>
             <button id="nextBtn"
@@ -57,29 +58,25 @@
         </div>
         <div id="map" class="h-96 w-3/4"> <!-- Adjust width (w-3/4) and height (h-96) classes as needed -->
             <!-- Map will be injected here by Mapbox GL JS -->
-            <div class="map relative h-20 w-20 ...">
-                <div class="absolute top-0 right-0 h-20 w-20 /div">
+            <div class="map relative h-32 w-32 ...">
+                <div class="absolute top-0 right-0 h-16 w-16"></div>
                 </div>
             </div>
         </div>
     </main>
     <!-- <div class="flex justify-center items-center h-screen"> -->
     <!-- This ensures full screen height and centers its children -->
-    <div id="map" class="h-96 w-3/4"> <!-- Adjust width (w-3/4) and height (h-96) classes as needed -->
-        <!-- Map will be injected here by Mapbox GL JS -->
-        <div class="map relative h-32 w-32 ...">
-            <div class="absolute top-0 right-0 h-16 w-16"></div>
-        </div>
-    </div>
+
     </div>
     <footer>
     </footer>
-    <script src= "https://code.jquery.com/jquery-3.4.1.min.js">
-                </script>
-                <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
-                <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.3/dayjs.min.js"
-                    integrity="sha256-iu/zLUB+QgISXBLCW/mcDi/rnf4m4uEDO0wauy76x7U=" crossorigin="anonymous"></script>
-                <script src="./assets/js/script.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.3/dayjs.min.js"
+        integrity="sha256-iu/zLUB+QgISXBLCW/mcDi/rnf4m4uEDO0wauy76x7U=" crossorigin="anonymous"></script>
+    <script src="./assets/js/script.js"></script>
+
 </body>
 
 </html>

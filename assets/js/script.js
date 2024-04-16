@@ -11,6 +11,9 @@ const searchForm = document.querySelector('#searchForm');
 const searchBtn = document.querySelector('#searchBtn');
 const searchBar = document.querySelector('#searchBar');
 const selectField = document.querySelector('#selectField');
+var map;
+const previousBtn = document.querySelector('#previousBtn')
+const nextBtn = document.querySelector('#nextBtn')
 
 function getUserLocation(callback) {
     callback = callback || function(lat, lng) {
@@ -41,6 +44,24 @@ function getUserLocation(callback) {
     navigator.geolocation.getCurrentPosition(success, error);
 }
 
+function initMapAndFetchBreweries() {
+    getUserLocation((lat, lng) => {
+        showMap(lat, lng);
+        fetchBreweriesNearby(lat, lng);
+    });
+}
+
+function showBreweriesOnMap(breweries, lat, lng) {
+    // Assume `map` is globally accessible or passed into this function
+    breweries.forEach(brewery => {
+        if (brewery.latitude && brewery.longitude) {
+            new mapboxgl.Marker()
+                .setLngLat([parseFloat(brewery.longitude), parseFloat(brewery.latitude)])
+                .setPopup(new mapboxgl.Popup().setText(`${brewery.name}`))
+                .addTo(map);
+        }
+    });
+}
 
 function showMap(lat, lng) {
     if (map) return; //check if map is akready initialized
@@ -152,50 +173,6 @@ function handleFormSubmit(event) {
     fetchBreweryData(parameter);
 }
 
-// function fetchBreweryData(parameter) {
-//     //We need to take the data inputed from the form and use it to search for breweies through the API
-//     const baseAPIurl = 'https://api.openbrewerydb.org/v1/breweries';
-//     const fetchUrl = `${baseAPIurl}?${parameter}&per_page=15`
-//     const coords = JSON.parse(localStorage.getItem('coords'))
-//     const longitude = coords[0];
-//     const latitude = coords[1];
-
-//     if (parameter=="by_dist") {
-//         async function fetchByDist() {
-//             try {
-//                 const response = await fetch(`${baseAPIurl}?by_dist=${longitude},${latitude}&per_page=15`);
-//                 if (!response.ok) {
-//                     throw new Error('Network response was not ok');
-//                 }
-//                 const data = await response.json();
-//                 localStorage.setItem('brewery-data', JSON.stringify(data)); 
-//                 console.log(data);
-//                 appendBreweryData();
-//             } catch (error) {
-//                 console.error('Error fetching brewery data:', error);
-//             }
-//         }
-//         fetchByDist();
-//     } else {
-
-//     async function fetchOpenBreweryDB() {
-//         try {
-//             const response = await fetch(fetchUrl);
-//             if (!response.ok) {
-//                 throw new Error('Network response was not ok');
-//             }
-//             const data = await response.json();
-//             localStorage.setItem('brewery-data', JSON.stringify(data)); 
-//             console.log(data);
-//             appendBreweryData();
-//         } catch (error) {
-//             console.error('Error fetching brewery data:', error);
-//         }
-//     }
-//     fetchOpenBreweryDB();
-    
-//     }
-// }
 function fetchBreweryData(parameter) {
     //We need to take the data inputed from the form and use it to search for breweies through the API
     const baseAPIurl = 'https://api.openbrewerydb.org/v1/breweries';
@@ -240,10 +217,21 @@ function fetchBreweryData(parameter) {
     
     }
 }
+// function fetchBreweryData(parameter) {
 
+//     const baseAPIurl = 'https://api.openbrewerydb.org/breweries';
+//     const fetchUrl = `${baseAPIurl}?${parameter}&per_page=15`;
 
-
-
+//     fetch(fetchUrl)
+//         .then(response => {
+//             if (!response.ok) throw new Error('Failed to fetch breweries');
+//             return response.json();
+//         })
+//         .then(data => {
+//             console.log('Fetched data:', data);
+//             localStorage.setItem('brewery-data', JSON.stringify(data));
+//         });
+//     }
 function appendBreweryData() {
     //We need to take the data we got from the fetch and append it to our HTML document
     const breweryBox = document.querySelector('#brewery-box');
@@ -284,16 +272,27 @@ function appendBreweryData() {
     
     newDiv.append(newTitle, newAddress, newAddress2, newWebsiteUrl, newLink, newLocation, newLocationLink);
     breweryBox.append(newDiv);
-    //We need to take the data we got from the fetch and append it to our HTML document
+    
 }
 
+previousBtn.addEventListener('click', function(){
+    let index = localStorage.getItem('currentIndex');
+    index--;
+    if (index<0){index = 0}
+    else if (index>14){index = 14};
+    localStorage.setItem('currentIndex', index);
+    console.log(index);
+    appendBreweryData();
+});
 
-
-
-
-
-searchBtn.addEventListener('click', function(event){
-    handleFormSubmit(event);
+nextBtn.addEventListener('click', function(){
+    let index = localStorage.getItem('currentIndex');
+    index++;
+    if (index<0){index = 0}
+    else if (index>14){index = 14};
+    localStorage.setItem('currentIndex', index);
+    console.log(index);
+    appendBreweryData();
 })
 
 selectField.addEventListener('change', function(){
@@ -324,17 +323,19 @@ document.getElementById('search-around-me-btn').addEventListener('click', functi
 });
 
 
+
 searchBtn.addEventListener('click', function(event) {
     event.preventDefault();
     handleFormSubmit(event);
 });
-
 // Attach the event listener to your button
 document.getElementById('search-around-me-btn').addEventListener('click', function() {
     getUserLocation();
     let parameter = "by_dist"
     fetchBreweryData(parameter);
+
 });
+
 
 
 
@@ -347,8 +348,6 @@ $(document).ready(function() {
     }
     localStorage.setItem('currentIndex', 0)
 });
-// document.addEventListener('DOMContentLoaded', function() {
-//     getUserLocation();  // Automatically fetch and display the user's location on load
-// });
-
-
+document.addEventListener('DOMContentLoaded', function() {
+    getUserLocation();  // Automatically fetch and display the user's location on load
+});

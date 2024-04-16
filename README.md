@@ -1,7 +1,7 @@
 
 # Brewery-Tracker
 
-![banner](#)
+![banner](./assets/css/images/BrewQuest.png)
 
 [![license](https://img.shields.io/github/license/:user/:djinjones.svg)](LICENSE)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
@@ -14,7 +14,7 @@
 ## Descrption
 
 
-This is a group project for mapping out breweries and planning itineraries related to it.
+This is a group project for mapping out breweries and planning itineraries related to it. We use Mapbox and OpenBreweryDB APIs to get the informaiton we need. There 
 
 ## Acceptence Criteria
 
@@ -32,11 +32,9 @@ It's done when the site allows travelers to input their location or automaticall
 It's done when the site displays relevant information about each brewery, such as name, address, type, and contact details.
 It's done when the site provides a responsive and user-friendly interface for travelers to easily view and interact with the brewery information on both desktop and mobile devices.
 
-Amanda- CSS HTML
-Dan- Java Script
-Rinjee- Java Script
-Jonathan- Else
-
+### Amanda- CSS, HTML, Tailwind.css expert
+### Dan- Java Script, Merge conflict resolver
+### Rinjee- Java Script, Mapbox API expert
 
 
 ## Table of Contents
@@ -78,7 +76,7 @@ Jonathan- Else
 [Daniel Jones](github.com/djinjones)
 [Amanda Martin](github.com/amandajrmartin)
 [Rinjee Sherpa](github.com/RinjeeG)
-[Johnathan Rios](github.com/)
+
 
 
 ## License
