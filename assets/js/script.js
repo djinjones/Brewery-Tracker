@@ -11,74 +11,156 @@ const searchForm = document.querySelector('#searchForm');
 const searchBtn = document.querySelector('#searchBtn');
 const searchBar = document.querySelector('#searchBar');
 const selectField = document.querySelector('#selectField');
+var map;
 
+function getUserLocation(callback) {
+    callback = callback || function(lat, lng) {
+        console.log(`Default callback: Latitude ${lat}, Longitude ${lng}`);
+    };
 
-function getUserLocation() {
-    // Check if Geolocation is supported
     if (!navigator.geolocation) {
-        alert('Geolocation is not supported by this browser.');
+        alert('Geolocation is not supported by your browser.');
         return;
     }
 
-    // Function to handle success in getting the location
     function success(position) {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
-
-        // Use latitude and longitude with Mapbox services here
-        // e.g., showMap(latitude, longitude);
         console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
-        showMap(latitude, longitude);
-        const currentCoords = [latitude, longitude];
-        localStorage.setItem('coords', JSON.stringify(currentCoords));
+        console.log(typeof callback); // Should log 'function'
+        if (typeof callback === 'function') {
+            callback(latitude, longitude);
+        } else {
+            console.error('callback is not a function');
+        }
     }
 
-    // Function to handle error in getting the location
     function error() {
         alert('Unable to retrieve your location.');
     }
 
-    // Make the request to get the user's location
     navigator.geolocation.getCurrentPosition(success, error);
 }
 
+function initMapAndFetchBreweries() {
+    getUserLocation((lat, lng) => {
+        showMap(lat, lng);
+        fetchBreweriesNearby(lat, lng);
+    });
+}
+
+function showBreweriesOnMap(breweries, lat, lng) {
+    // Assume `map` is globally accessible or passed into this function
+    breweries.forEach(brewery => {
+        if (brewery.latitude && brewery.longitude) {
+            new mapboxgl.Marker()
+                .setLngLat([parseFloat(brewery.longitude), parseFloat(brewery.latitude)])
+                .setPopup(new mapboxgl.Popup().setText(`${brewery.name}`))
+                .addTo(map);
+        }
+    });
+}
+
+
+
 
 function showMap(lat, lng) {
+    if (map) return; //check if map is akready initialized
     mapboxgl.accessToken = 'pk.eyJ1IjoicmluamVlIiwiYSI6ImNsdXQ0ZWRjNjBvZTkybG85dTcxNjFudXgifQ.wuMqiIb0vQfJz3-r-ylGCA'; // Replace with your actual Mapbox API access token
 
     // Create a new map instance using Mapbox GL JS
-    var map = new mapboxgl.Map({
+    map = new mapboxgl.Map({
         container: 'map', // The HTML element ID where you want the map to appear
-        style: 'mapbox://styles/mapbox/streets-v12', // The style of the map you want to use
+        style: 'mapbox://styles/mapbox/streets-v11', // The style of the map you want to use
         center: [lng, lat], // Starting position [longitude, latitude]
         zoom: 12 // Starting zoom level
     });
-
-    // Add navigation controls to the map (optional)
+    map.on('load', function() {
+        console.log("Map loaded:", map);  // Check if map is correctly initialized here
+        addMapControls();  // Add controls after the map is loaded
+        map.addSource('points', {
+            type: 'geojson',
+            data: {
+                type: 'FeatureCollection',
+                features: [{
+                    type: 'Feature',
+                    geometry: {
+                        type: 'Point',
+                        coordinates: [lng, lat]  // Example coordinates
+                    },
+                    properties: {
+                        title: 'Mapbox DC',
+                        icon: 'beer-11'
+                    }
+                }]
+            }
+        });
     
+        // Add a layer to use the image to represent the data
+        map.addLayer({
+            id: 'points',
+            type: 'symbol',
+            source: 'points',
+            layout: {
+                'icon-image': '{icon}',  // Use the property 'icon' from the source's features
+                'icon-size': 1.5
+            }
+        });
+    });
+}
+
+
+function addMapControls() {
+    console.log(map); // Should not be undefined if everything is correct
+
     var directions = new MapboxDirections({
         accessToken: mapboxgl.accessToken,
-        unit: 'metric', // Use 'metric' or 'imperial' for unit systems
-        profile: 'mapbox/driving' // Specify the routing profile
+        unit: 'metric',
+        profile: 'mapbox/driving'
     });
+
+    if (!map) {
+        console.error('Map is not initialized.');
+        return;
+    }
+
     map.addControl(directions, 'top-left');
     map.addControl(new mapboxgl.NavigationControl());
+}
 
-    var geolocate = new mapboxgl.GeolocateControl({
-        positionOptions: {
-            enableHighAccuracy: true
-        },
-        trackUserLocation: true,
-        showUserLocation: true
-    });
 
-    map.addControl(geolocate);
-    geolocate.on('geolocate', function(e) {
-        var lng = e.coords.longitude;
-        var lat = e.coords.latitude;
-        directions.setOrigin([lng, lat]); // Set the origin dynamically
-    });
+function fetchBreweriesNearby(lat, lng) {
+    const fetchUrl = `https://api.openbrewerydb.org/breweries?by_dist=${lat},${lng}&per_page=10`;
+    fetch(fetchUrl)
+        .then(response => response.json())
+        .then(breweries => {
+            console.log("Received breweries:", breweries);
+            if (breweries.length > 0) {
+                breweries.forEach(brewery => {
+                    if (brewery.latitude && brewery.longitude) {
+                        new mapboxgl.Marker({
+                            // element: createMarkerElement('beer-11'),
+                            color: "#FF6347"
+                        })
+                        .setLngLat([brewery.longitude, brewery.latitude])
+                        .setPopup(new mapboxgl.Popup().setText(`${brewery.name} - ${brewery.type}`))
+                        .addTo(map);
+                    }
+                });
+            } else {
+                console.log('No breweries found near this location.');
+            }
+        })
+        .catch(error => console.error('Error fetching breweries:', error));
+}
 
+function createMarkerElement(iconName) {
+    const el = document.createElement('div');
+    el.className = 'marker';
+    el.style.backgroundImage = `url('mapbox://styles/mapbox/streets-v11/maki_icons/${iconName}.png')`;
+    el.style.width = '30px';
+    el.style.height = '30px';
+    return el;
 }
 
 
@@ -93,50 +175,67 @@ function handleFormSubmit(event) {
     fetchBreweryData(parameter);
 }
 
-function fetchBreweryData(parameter) {
-    //We need to take the data inputed from the form and use it to search for breweies through the API
-    const baseAPIurl = 'https://api.openbrewerydb.org/v1/breweries';
-    const fetchUrl = `${baseAPIurl}?${parameter}&per_page=15`
-    const coords = JSON.parse(localStorage.getItem('coords'))
-    const longitude = coords[0];
-    const latitude = coords[1];
+// function fetchBreweryData(parameter) {
+//     //We need to take the data inputed from the form and use it to search for breweies through the API
+//     const baseAPIurl = 'https://api.openbrewerydb.org/v1/breweries';
+//     const fetchUrl = `${baseAPIurl}?${parameter}&per_page=15`
+//     const coords = JSON.parse(localStorage.getItem('coords'))
+//     const longitude = coords[0];
+//     const latitude = coords[1];
 
-    if (parameter=="by_dist") {
-        async function fetchByDist() {
-            try {
-                const response = await fetch(`${baseAPIurl}?by_dist=${longitude},${latitude}&per_page=15`);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const data = await response.json();
-                localStorage.setItem('brewery-data', JSON.stringify(data)); 
-                console.log(data);
-                appendBreweryData();
-            } catch (error) {
-                console.error('Error fetching brewery data:', error);
-            }
-        }
-        fetchByDist();
-    } else {
+//     if (parameter=="by_dist") {
+//         async function fetchByDist() {
+//             try {
+//                 const response = await fetch(`${baseAPIurl}?by_dist=${longitude},${latitude}&per_page=15`);
+//                 if (!response.ok) {
+//                     throw new Error('Network response was not ok');
+//                 }
+//                 const data = await response.json();
+//                 localStorage.setItem('brewery-data', JSON.stringify(data)); 
+//                 console.log(data);
+//                 appendBreweryData();
+//             } catch (error) {
+//                 console.error('Error fetching brewery data:', error);
+//             }
+//         }
+//         fetchByDist();
+//     } else {
 
-    async function fetchOpenBreweryDB() {
-        try {
-            const response = await fetch(fetchUrl);
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const data = await response.json();
-            localStorage.setItem('brewery-data', JSON.stringify(data)); 
-            console.log(data);
-            appendBreweryData();
-        } catch (error) {
-            console.error('Error fetching brewery data:', error);
-        }
-    }
-    fetchOpenBreweryDB();
+//     async function fetchOpenBreweryDB() {
+//         try {
+//             const response = await fetch(fetchUrl);
+//             if (!response.ok) {
+//                 throw new Error('Network response was not ok');
+//             }
+//             const data = await response.json();
+//             localStorage.setItem('brewery-data', JSON.stringify(data)); 
+//             console.log(data);
+//             appendBreweryData();
+//         } catch (error) {
+//             console.error('Error fetching brewery data:', error);
+//         }
+//     }
+//     fetchOpenBreweryDB();
     
-    }
+//     }
+// }
+function fetchBreweryData(parameter) {
+    const baseAPIurl = 'https://api.openbrewerydb.org/breweries';
+    const fetchUrl = `${baseAPIurl}?${parameter}&per_page=15`;
+
+    fetch(fetchUrl)
+        .then(response => {
+            if (!response.ok) throw new Error('Failed to fetch breweries');
+            return response.json();
+        })
+        .then(data => {
+            console.log('Fetched data:', data);
+            localStorage.setItem('brewery-data', JSON.stringify(data));
+            appendBreweryData();
+        })
+        .catch(error => console.error('Error during fetch:', error));
 }
+
 
 
 
@@ -180,10 +279,6 @@ function appendBreweryData() {
 
 
 
-searchBtn.addEventListener('click', function(event){
-    handleFormSubmit(event);
-})
-
 selectField.addEventListener('change', function(){
     const selectedOption = selectField.value;
         switch (selectedOption) {
@@ -203,29 +298,33 @@ selectField.addEventListener('change', function(){
     }
 })
 
-searchBtn.addEventListener('click', function(event){
+document.getElementById('search-around-me-btn').addEventListener('click', function() {
+    if (!map) {
+        initMapAndFetchBreweries();
+    } else {
+        getUserLocation((lat, lng) => fetchBreweriesNearby(lat, lng));
+    }
+});
+
+
+searchBtn.addEventListener('click', function(event) {
+    event.preventDefault();
     handleFormSubmit(event);
 });
 
-// Attach the event listener to your button
-document.getElementById('search-around-me-btn').addEventListener('click', function() {
-    getUserLocation();
-    let parameter = "by_dist"
-    fetchBreweryData(parameter);
-});
 
 
 
 $(document).ready(function() {
     if ($('#map').length > 0) {
         console.log('Map container is ready.');
-        getUserLocation();
+        initMapAndFetchBreweries();
     } else {
         console.log('Map container is not found.');
     }
 });
-document.addEventListener('DOMContentLoaded', function() {
-    getUserLocation();  // Automatically fetch and display the user's location on load
-});
+// document.addEventListener('DOMContentLoaded', function() {
+//     getUserLocation();  // Automatically fetch and display the user's location on load
+// });
 
 
