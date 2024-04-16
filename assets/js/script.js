@@ -12,8 +12,11 @@ const searchBtn = document.querySelector('#searchBtn');
 const searchBar = document.querySelector('#searchBar');
 const selectField = document.querySelector('#selectField');
 var map;
-const previousBtn = document.querySelector('#previousBtn')
-const nextBtn = document.querySelector('#nextBtn')
+const previousBtn = document.querySelector('#previousBtn');
+const nextBtn = document.querySelector('#nextBtn');
+const modal = document.querySelector('.customModal')
+const customModalForm = document.querySelector('.customModalForm');
+const ageInput = document.querySelector('#age')
 
 function getUserLocation(callback) {
     callback = callback || function(lat, lng) {
@@ -85,7 +88,8 @@ function showMap(lat, lng) {
                     type: 'Feature',
                     geometry: {
                         type: 'Point',
-                        coordinates: [lng, lat]  // Example coordinates
+                        coordinates: [lng, lat],  // Example coordinates
+                        
                     },
                     properties: {
                         title: 'Mapbox DC',
@@ -256,7 +260,8 @@ function appendBreweryData() {
     newDiv.classList.add("breweryBox");
     newTitle.classList.add("breweryTitle", "custom-text");
     newAddress.classList.add("breweryText", "custom-text");
-    newAddress.classList.add( "breweryText", "custom-text");
+    newAddress.classList.add("breweryText", "custom-text");
+    newAddress2.classList.add("breweryText", "custom-text")
     newWebsiteUrl.classList.add("breweryUrl", "custom-text");
     newLink.classList.add("breweryLink", "custom-text");
     newLocation.classList.add("breryLocation", "custom-text");
@@ -275,7 +280,8 @@ function appendBreweryData() {
     
 }
 
-previousBtn.addEventListener('click', function(){
+previousBtn.addEventListener('click', function(event){
+    event.preventDefault();
     let index = localStorage.getItem('currentIndex');
     index--;
     if (index<0){index = 0}
@@ -285,7 +291,8 @@ previousBtn.addEventListener('click', function(){
     appendBreweryData();
 });
 
-nextBtn.addEventListener('click', function(){
+nextBtn.addEventListener('click', function(event){
+    event.preventDefault();
     let index = localStorage.getItem('currentIndex');
     index++;
     if (index<0){index = 0}
@@ -338,6 +345,12 @@ document.getElementById('search-around-me-btn').addEventListener('click', functi
 });
 
 
+    customModalForm.addEventListener('submit', function(event){
+        event.preventDefault();
+        if (ageInput.value >= 21) {
+            modal.style.display= 'none';
+        }
+    })
 
 
 $(document).ready(function() {
@@ -347,8 +360,12 @@ $(document).ready(function() {
     } else {
         console.log('Map container is not found.');
     }
-    localStorage.setItem('currentIndex', 0)
+    localStorage.setItem('currentIndex', 0);
+    
 });
+
+
+
 document.addEventListener('DOMContentLoaded', function() {
     getUserLocation();  // Automatically fetch and display the user's location on load
 });
