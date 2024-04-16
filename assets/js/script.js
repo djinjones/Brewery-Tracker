@@ -173,64 +173,65 @@ function handleFormSubmit(event) {
     fetchBreweryData(parameter);
 }
 
-// function fetchBreweryData(parameter) {
-//     //We need to take the data inputed from the form and use it to search for breweies through the API
-//     const baseAPIurl = 'https://api.openbrewerydb.org/v1/breweries';
-//     const fetchUrl = `${baseAPIurl}?${parameter}&per_page=15`
-//     const coords = JSON.parse(localStorage.getItem('coords'))
-//     const longitude = coords[0];
-//     const latitude = coords[1];
-
-//     if (parameter=="by_dist") {
-//         async function fetchByDist() {
-//             try {
-//                 const response = await fetch(`${baseAPIurl}?by_dist=${longitude},${latitude}&per_page=15`);
-//                 if (!response.ok) {
-//                     throw new Error('Network response was not ok');
-//                 }
-//                 const data = await response.json();
-//                 localStorage.setItem('brewery-data', JSON.stringify(data)); 
-//                 console.log(data);
-//                 appendBreweryData();
-//             } catch (error) {
-//                 console.error('Error fetching brewery data:', error);
-//             }
-//         }
-//         fetchByDist();
-//     } else {
-
-//     async function fetchOpenBreweryDB() {
-//         try {
-//             const response = await fetch(fetchUrl);
-//             if (!response.ok) {
-//                 throw new Error('Network response was not ok');
-//             }
-//             const data = await response.json();
-//             localStorage.setItem('brewery-data', JSON.stringify(data)); 
-//             console.log(data);
-//             appendBreweryData();
-//         } catch (error) {
-//             console.error('Error fetching brewery data:', error);
-//         }
-//     }
-//     fetchOpenBreweryDB();
-    
-//     }
-// }
 function fetchBreweryData(parameter) {
+    //We need to take the data inputed from the form and use it to search for breweies through the API
+    const baseAPIurl = 'https://api.openbrewerydb.org/v1/breweries';
+    const fetchUrl = `${baseAPIurl}?${parameter}&per_page=15`
+    const coords = JSON.parse(localStorage.getItem('coords'))
+    const longitude = coords[0];
+    const latitude = coords[1];
 
-    const baseAPIurl = 'https://api.openbrewerydb.org/breweries';
-    const fetchUrl = `${baseAPIurl}?${parameter}&per_page=15`;
+    if (parameter=="by_dist") {
+        async function fetchByDist() {
+            try {
+                const response = await fetch(`${baseAPIurl}?by_dist=${longitude},${latitude}&per_page=15`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                localStorage.setItem('brewery-data', JSON.stringify(data)); 
+                console.log(data);
+                appendBreweryData();
+            } catch (error) {
+                console.error('Error fetching brewery data:', error);
+            }
+        }
+        fetchByDist();
+    } else {
 
-    fetch(fetchUrl)
-        .then(response => {
-            if (!response.ok) throw new Error('Failed to fetch breweries');
-            return response.json();
-        })
-        .then(data => {
-            console.log('Fetched data:', data);
-            localStorage.setItem('brewery-data', JSON.stringify(data));
+    async function fetchOpenBreweryDB() {
+        try {
+            const response = await fetch(fetchUrl);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            localStorage.setItem('brewery-data', JSON.stringify(data)); 
+            console.log(data);
+            appendBreweryData();
+        } catch (error) {
+            console.error('Error fetching brewery data:', error);
+        }
+    }
+    fetchOpenBreweryDB();
+    
+    }
+}
+// function fetchBreweryData(parameter) {
 
+//     const baseAPIurl = 'https://api.openbrewerydb.org/breweries';
+//     const fetchUrl = `${baseAPIurl}?${parameter}&per_page=15`;
+
+//     fetch(fetchUrl)
+//         .then(response => {
+//             if (!response.ok) throw new Error('Failed to fetch breweries');
+//             return response.json();
+//         })
+//         .then(data => {
+//             console.log('Fetched data:', data);
+//             localStorage.setItem('brewery-data', JSON.stringify(data));
+//         });
+//     }
 function appendBreweryData() {
     //We need to take the data we got from the fetch and append it to our HTML document
     const breweryBox = document.querySelector('#brewery-box');
@@ -326,7 +327,7 @@ document.getElementById('search-around-me-btn').addEventListener('click', functi
 searchBtn.addEventListener('click', function(event) {
     event.preventDefault();
     handleFormSubmit(event);
-
+});
 // Attach the event listener to your button
 document.getElementById('search-around-me-btn').addEventListener('click', function(event) {
     event.preventDefault();
@@ -348,8 +349,6 @@ $(document).ready(function() {
     }
     localStorage.setItem('currentIndex', 0)
 });
-// document.addEventListener('DOMContentLoaded', function() {
-//     getUserLocation();  // Automatically fetch and display the user's location on load
-// });
-
-
+document.addEventListener('DOMContentLoaded', function() {
+    getUserLocation();  // Automatically fetch and display the user's location on load
+});

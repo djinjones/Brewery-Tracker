@@ -32,9 +32,9 @@ It's done when the site allows travelers to input their location or automaticall
 It's done when the site displays relevant information about each brewery, such as name, address, type, and contact details.
 It's done when the site provides a responsive and user-friendly interface for travelers to easily view and interact with the brewery information on both desktop and mobile devices.
 
-Amanda- CSS HTML
-Dan- Java Script
-Rinjee- Java Script
+### Amanda- CSS, HTML, Tailwind.css expert
+### Dan- Java Script, Merge conflict resolver
+### Rinjee- Java Script, Mapbox API expert
 
 
 ## Table of Contents
