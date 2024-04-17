@@ -349,6 +349,9 @@ document.getElementById('search-around-me-btn').addEventListener('click', functi
         event.preventDefault();
         if (ageInput.value >= 21) {
             modal.style.display= 'none';
+        } else {
+        alert("must be 21 to continue");
+        location.reload();
         }
     })
 
