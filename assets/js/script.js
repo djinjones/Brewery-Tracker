@@ -22,37 +22,35 @@ function initializeMap() {
     map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/streets-v11',
-        zoom: 12
+        zoom: 12 // Initial zoom level
     });
 
-    map.on('load', () => {
-        console.log("Map is fully loaded");
+    map.on('load', function() {
         setupMapControls();
-        getUserLocation(setInitialMapPosition);
-        setupEventListeners();
+        getUserLocation(); // Fetch user location and update map
     });
 }
 
-// Set the initial position of the map to the user's current location
+function getUserLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            setInitialMapPosition(latitude, longitude); // Update map position
+            fetchBreweriesNearLocation(latitude, longitude, map); // Optional: fetch nearby breweries
+        }, function(error) {
+            console.error("Error getting the user's location: ", error);
+            alert('Unable to retrieve your location.');
+        });
+    } else {
+        alert('Geolocation is not supported by your browser.');
+    }
+}
+
 function setInitialMapPosition(lat, lng) {
     map.flyTo({ center: [lng, lat], zoom: 12 });
 }
-
-// Geolocation and User Location Management
-function getUserLocation() {
-    if (!navigator.geolocation) {
-        alert('Geolocation is not supported by your browser.');
-        return;
-    }
-    navigator.geolocation.getCurrentPosition(function(position) {
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
-    
-        // Fetch and display breweries near the user's current location
-        fetchBreweriesNearLocation(latitude, longitude, map);
-    });
-}
-
 // Add map controls like navigation controls and directions
 function setupMapControls() {
     map.addControl(new mapboxgl.NavigationControl());
@@ -70,7 +68,7 @@ function displayBreweriesOnMap(breweries, map) {
             const popupContent = `
                 <strong>${brewery.name}</strong><br>
                 <a href="${brewery.website_url}" target="_blank">Visit Website</a><br>
-                <button onclick="getDirections(${brewery.latitude}, ${brewery.longitude})">Get Directions</button>
+                <button class="get-directions-btn" data-lat="${brewery.latitude}" data-lng="${brewery.longitude}">Get Directions</button>
             `;
             new mapboxgl.Marker()
                 .setLngLat([brewery.longitude, brewery.latitude])
@@ -78,20 +76,27 @@ function displayBreweriesOnMap(breweries, map) {
                 .addTo(map);
         }
     });
-}
+      // Attach event listeners after map and markers are rendered
+      attachDirectionEventListeners(map);
+    }
+
+function attachDirectionEventListeners(map) {
+        // Use event delegation to handle clicks on any 'get-directions-btn' within the map
+        map.getContainer().addEventListener('click', function(event) {
+            if (event.target.classList.contains('get-directions-btn')) {
+                const lat = parseFloat(event.target.getAttribute('data-lat'));
+                const lng = parseFloat(event.target.getAttribute('data-lng'));
+                getDirections(lat, lng);
+            }
+        });
+    }
 // Function to handle direction requests (assumes you have a setup to handle directions)
 function getDirections(lat, lng) {
-    // Check if the Geolocation API is supported
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
-            // Get the current latitude and longitude from the position object
             const startLat = position.coords.latitude;
             const startLng = position.coords.longitude;
-
-            // Create a Google Maps URL for driving directions from the current location to the given lat/lng
             const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${startLat},${startLng}&destination=${lat},${lng}&travelmode=driving`;
-
-            // Open Google Maps in a new tab with the constructed URL
             window.open(googleMapsUrl, '_blank');
         }, function(error) {
             console.error("Error getting the user's location: ", error);
@@ -101,6 +106,7 @@ function getDirections(lat, lng) {
         alert("Geolocation is not supported by this browser.");
     }
 }
+
 
 
 
@@ -286,6 +292,10 @@ searchBtn.addEventListener('click', function(event) {
 });
 function setupEventListeners() {
     document.getElementById('search-around-me-btn').addEventListener('click', () => {
-        getUserLocation(fetchAndDisplayBreweries);
+        getUserLocation();
     });
 }
+
+$(document).ready(function() {
+    getUserLocation();
+});
