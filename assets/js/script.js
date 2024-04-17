@@ -14,6 +14,9 @@ const selectField = document.querySelector('#selectField');
 const previousBtn = document.querySelector('#previousBtn')
 const nextBtn = document.querySelector('#nextBtn')
 let map;
+const ageContinue = document.querySelector('.ageContinue');
+const ageCancel = document.querySelector('.ageCancel');
+const ageModal = document.querySelector('.ageModal');
 
 function initializeMap() {
     if (map) return; // Ensure the map is only initialized once
@@ -349,17 +352,26 @@ searchBtn.addEventListener('click', function(event) {
     handleFormSubmit(event);
 });
 
-document.getElementById('search-around-me-btn').addEventListener('click', (event) => {
-    event.preventDefault();
-        const parameter='by_dist';
-        fetchBreweryData(parameter);
-        getUserLocation();
-});
+// document.getElementById('search-around-me-btn').addEventListener('click', (event) => {
+//     event.preventDefault();
+//         const parameter='by_dist';
+//         fetchBreweryData(parameter);
+//         getUserLocation();
+// });
 
 
 $(document).ready(function() {
     getUserLocation();
     let parameter = 'by_dist'
     fetchBreweryData(parameter);
-    localStorage.setItem('currentIndex', 0)
+    localStorage.setItem('currentIndex', 0);
+    
 });
+
+ageContinue.addEventListener('click', function(event){
+    ageModal.style.display = "none";
+})
+
+ageCancel.addEventListener('click', function(event){
+    location.reload();
+})
