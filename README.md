@@ -59,6 +59,7 @@ It's done when the site provides a responsive and user-friendly interface for tr
 ## API
 
 [Open Brewery DB](https://api.openbrewerydb.org/breweries)
+[MapBox](https://www.mapbox.com)
 
 ## References
 
@@ -67,6 +68,7 @@ It's done when the site provides a responsive and user-friendly interface for tr
 
 ## Resources
 
+- [Mapbox GL](https://docs.mapbox.com)
 - [Open Brewery DB](https://www.openbrewerydb.org)
 - [Github markdown-badges](https://ileriayo.github.io/markdown-badges/)
 
