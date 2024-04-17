@@ -29,25 +29,13 @@ function initializeMap() {
         setupMapControls();
         getUserLocation(); // Fetch user location and update map
 
-        map.on('click', 'points', (e) => {
-            map.flyTo({
-                center: e.features[0].geometry.coordinates
-            });
-        });
+        // map.on('click', 'Marker', (e) => {
+        //     map.flyTo({
+        //         center: e.features[0].geometry.coordinates
+        //     });
+        // });
         
-        // Change the cursor to a pointer when the it enters a feature in the 'circle' layer.
-        map.on('mouseenter', 'points', () => {
-            map.getCanvas().style.cursor = 'pointer';
-        });
-        
-        // Change it back to a pointer when it leaves.
-        map.on('mouseleave', 'points', () => {
-            map.getCanvas().style.cursor = '';
-        });
 
-        const breweryData = JSON.parse(localStorage.getItem('brewery-data'));
-        //const currentIndex = 
-        //send current lat and long to mapbox
         //move center to current brewery
     });
 }
@@ -57,7 +45,8 @@ function getUserLocation() {
         navigator.geolocation.getCurrentPosition(function(position) {
             const latitude = position.coords.latitude;
             const longitude = position.coords.longitude;
-
+            const currentPosition = [latitude, longitude];
+            localStorage.setItem('coords', JSON.stringify(currentPosition));
             setInitialMapPosition(latitude, longitude); // Update map position
             fetchBreweriesNearLocation(latitude, longitude, map); // Optional: fetch nearby breweries
         }, function(error) {
@@ -200,6 +189,7 @@ function fetchBreweryData(parameter) {
             localStorage.setItem('brewery-data', JSON.stringify(data)); 
             console.log(data);
             appendBreweryData();
+            reCenterMap();
         } catch (error) {
             console.error('Error fetching brewery data:', error);
         }
@@ -250,24 +240,67 @@ function appendBreweryData() {
     newAddress.classList.add("breweryText", "custom-text");
     newAddress2.classList.add("breweryText", "custom-text")
     newWebsiteUrl.classList.add("breweryUrl", "custom-text");
-    newLink.classList.add("breweryLink", "custom-text");
+    //newLink.classList.add("breweryLink", "custom-text");
     newLocation.classList.add("breryLocation", "custom-text");
-    newLocationLink.classList.add("breweryLocationLink", "custom-text");
+    //newLocationLink.classList.add("breweryLocationLink", "custom-text");
 
-    newLink.textContent = "View website ";
-    newLink.href = data.website_url;
+    //newLink.textContent = "View website ";
+    //newLink.href = data.website_url;
     newTitle.textContent = data.name;
     newAddress.textContent = data.address_1 
     newAddress2.textContent = data.city + " " + data.state + ", " + data.country + " " + data.postal_code + " ";
-    newLocationLink.textContent = "View Location ";
-    newLocationLink.href = `api.mapbox.com/geocoding/v5/mapbox.places/peets.json?proximity=${data.longitude},${data.latitude}&access_token=<pk.eyJ1IjoicmluamVlIiwiYSI6ImNsdXQ0ZWRjNjBvZTkybG85dTcxNjFudXgifQ.wuMqiIb0vQfJz3-r-ylGCA/>`;
+    //newLocationLink.textContent = "View Location ";
+    // newLocationLink.href = `api.mapbox.com/geocoding/v5/mapbox.places/peets.json?proximity=${data.longitude},${data.latitude}&access_token=<pk.eyJ1IjoicmluamVlIiwiYSI6ImNsdXQ0ZWRjNjBvZTkybG85dTcxNjFudXgifQ.wuMqiIb0vQfJz3-r-ylGCA/>`;
     
     newDiv.append(newTitle, newAddress, newAddress2, newWebsiteUrl, newLink, newLocation, newLocationLink);
     breweryBox.append(newDiv);
     
 }
 
+function reCenterMap() {
+    
+    const breweryData = JSON.parse(localStorage.getItem('brewery-data'));
+    const currentIndex = JSON.parse(localStorage.getItem('currentIndex'));
+    const currentBrewery = breweryData[currentIndex]
+    const accessToken = 'pk.eyJ1IjoicmluamVlIiwiYSI6ImNsdXQ0ZWRjNjBvZTkybG85dTcxNjFudXgifQ.wuMqiIb0vQfJz3-r-ylGCA'
+    const address = currentBrewery.address_1 + ' ' + currentBrewery.city + ' ' + currentBrewery.state + ' ' + currentBrewery.postal_code;
+    console.log(address)
+    const apiUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${accessToken}`;
+    const popupContent = `
+    <strong>${currentBrewery.name}</strong><br>
+    <a href="${currentBrewery.website_url}" target="_blank">Visit Website</a><br>
+    <button class="get-directions-btn" data-lat="${currentBrewery.latitude}" data-lng="${currentBrewery.longitude}">Get Directions</button>
+`;
 
+    fetch(apiUrl)
+    .then(response => response.json())
+    .then(data => {
+      // Extract latitude and longitude from the response
+      const coordinates = data.features[0].geometry.coordinates;
+      const lng = coordinates[0];
+      const lat = coordinates[1];
+  
+      // Initialize Mapbox GL map
+      mapboxgl.accessToken = accessToken;
+      const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: [lng, lat], // Center the map on the coordinates returned from the address search
+        zoom: 15 // Zoom level
+      });
+  
+      // Add a marker at the searched address
+  
+//   new mapboxgl.Marker()
+//       .setLngLat([brewery.longitude, brewery.latitude])
+//       .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(popupContent))
+//       .addTo(map);
+      new mapboxgl.Marker().setLngLat([lng, lat]).setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(popupContent)).addTo(map);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+}
 previousBtn.addEventListener('click', function(event){
     event.preventDefault();
     let index = localStorage.getItem('currentIndex');
@@ -276,6 +309,7 @@ previousBtn.addEventListener('click', function(event){
     else if (index>14){index = 14};
     localStorage.setItem('currentIndex', index);
     console.log(index);
+    reCenterMap();
     appendBreweryData();
 });
 
@@ -287,6 +321,7 @@ nextBtn.addEventListener('click', function(event){
     else if (index>14){index = 14};
     localStorage.setItem('currentIndex', index);
     console.log(index);
+    reCenterMap();
     appendBreweryData();
 })
 
@@ -318,9 +353,13 @@ document.getElementById('search-around-me-btn').addEventListener('click', (event
     event.preventDefault();
         const parameter='by_dist';
         fetchBreweryData(parameter);
+        getUserLocation();
 });
 
 
 $(document).ready(function() {
     getUserLocation();
+    let parameter = 'by_dist'
+    fetchBreweryData(parameter);
+    localStorage.setItem('currentIndex', 0)
 });
