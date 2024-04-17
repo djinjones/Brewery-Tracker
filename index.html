@@ -23,7 +23,7 @@
     <nav>
     </nav>
     <main>
-        <article class="bq">
+        <article class="bq my-24">
             <form id="searchForm" class="flex flex-col w-50">
                 <h2 class="block font-medium leading-6 text-gray-900 text-xl text-neutral-950 font-serif italic">Search
                     for
@@ -44,18 +44,20 @@
                 <button
                     class="py-3 my-3 rounded-md border-slate-50 ring-1 ring-inset ring-gray-300 bg-amber-700 text-neutral-950 font-serif italic"
                     id="search-around-me-btn">Breweries Around Me</button>
-            </form>
-            <img src="./assets/css/images/BrewQuest.png" alt="beer world">
-        </article>
-        <div id="brewery-box">
-
-        </div>
-        <div >
+                    <div >
             <button id="previousBtn"
                 class="rounded-md border-3 py-3 my-3 text-gray-900 ring-1 ring-inset ring-gray-300 text-neutral-950 font-serif italic bg-amber-700">Previous</button>
             <button id="nextBtn"
                 class="py-3 my-3 rounded-md border-slate-50 ring-1 ring-inset ring-gray-300 text-neutral-950 font-serif italic bg-amber-700">Next</button>
         </div>
+        <div id="brewery-box">
+
+        </div>
+            </form>
+            <img src="./assets/css/images/BrewQuest.png" alt="beer world" id="beerWorld">
+        </article>
+        
+        
         <div id="map" class="h-96 w-3/4"> <!-- Adjust width (w-3/4) and height (h-96) classes as needed -->
             <!-- Map will be injected here by Mapbox GL JS -->
             <div class="map relative h-32 w-32 ...">

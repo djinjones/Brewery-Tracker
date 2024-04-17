@@ -28,6 +28,27 @@ function initializeMap() {
     map.on('load', function() {
         setupMapControls();
         getUserLocation(); // Fetch user location and update map
+
+        map.on('click', 'points', (e) => {
+            map.flyTo({
+                center: e.features[0].geometry.coordinates
+            });
+        });
+        
+        // Change the cursor to a pointer when the it enters a feature in the 'circle' layer.
+        map.on('mouseenter', 'points', () => {
+            map.getCanvas().style.cursor = 'pointer';
+        });
+        
+        // Change it back to a pointer when it leaves.
+        map.on('mouseleave', 'points', () => {
+            map.getCanvas().style.cursor = '';
+        });
+
+        const breweryData = JSON.parse(localStorage.getItem('brewery-data'));
+        //const currentIndex = 
+        //send current lat and long to mapbox
+        //move center to current brewery
     });
 }
 
@@ -292,11 +313,13 @@ searchBtn.addEventListener('click', function(event) {
     event.preventDefault();
     handleFormSubmit(event);
 });
-function setupEventListeners() {
-    document.getElementById('search-around-me-btn').addEventListener('click', () => {
-        getUserLocation();
-    });
-}
+
+document.getElementById('search-around-me-btn').addEventListener('click', (event) => {
+    event.preventDefault();
+        const parameter='by_dist';
+        fetchBreweryData(parameter);
+});
+
 
 $(document).ready(function() {
     getUserLocation();
