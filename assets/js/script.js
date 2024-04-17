@@ -109,8 +109,30 @@ function showMap(lat, lng) {
                 'icon-size': 1.5
             }
         });
+        map.on('click', 'points', (e) => {
+            map.flyTo({
+                center: e.features[0].geometry.coordinates
+            });
+        });
+        
+        // Change the cursor to a pointer when the it enters a feature in the 'circle' layer.
+        map.on('mouseenter', 'points', () => {
+            map.getCanvas().style.cursor = 'pointer';
+        });
+        
+        // Change it back to a pointer when it leaves.
+        map.on('mouseleave', 'points', () => {
+            map.getCanvas().style.cursor = '';
+        });
+
+        const breweryData = JSON.parse(localStorage.getItem('brewery-data'));
+        const currentIndex = 
+        //send current lat and long to mapbox
+        //move center to current brewery
     });
 }
+       // Center the map on the coordinates of any clicked circle from the 'circle' layer.
+
 
 
 function addMapControls() {
@@ -163,6 +185,7 @@ function createMarkerElement(iconName) {
     el.style.backgroundImage = `url('mapbox://styles/mapbox/streets-v11/maki_icons/${iconName}.png')`;
     el.style.width = '30px';
     el.style.height = '30px';
+
     return el;
 }
 
@@ -174,6 +197,7 @@ function handleFormSubmit(event) {
     const searchValue = searchBar.value;
     parameter = `${parameter}=${searchValue}`
     localStorage.setItem('currentIndex', 0)
+    searchBar.value='';
     fetchBreweryData(parameter);
 }
 
@@ -218,7 +242,7 @@ function fetchBreweryData(parameter) {
         }
     }
     fetchOpenBreweryDB();
-    
+    appendBreweryData();
     }
 }
 // function fetchBreweryData(parameter) {
@@ -279,6 +303,7 @@ function appendBreweryData() {
     breweryBox.append(newDiv);
     
 }
+
 
 previousBtn.addEventListener('click', function(event){
     event.preventDefault();
