@@ -11,160 +11,125 @@ const searchForm = document.querySelector('#searchForm');
 const searchBtn = document.querySelector('#searchBtn');
 const searchBar = document.querySelector('#searchBar');
 const selectField = document.querySelector('#selectField');
-var map;
-const previousBtn = document.querySelector('#previousBtn');
-const nextBtn = document.querySelector('#nextBtn');
-const modal = document.querySelector('.customModal')
-const customModalForm = document.querySelector('.customModalForm');
-const ageInput = document.querySelector('#age')
+const previousBtn = document.querySelector('#previousBtn')
+const nextBtn = document.querySelector('#nextBtn')
+let map;
 
-function getUserLocation(callback) {
-    callback = callback || function(lat, lng) {
-        console.log(`Default callback: Latitude ${lat}, Longitude ${lng}`);
-    };
+function initializeMap() {
+    if (map) return; // Ensure the map is only initialized once
 
-    if (!navigator.geolocation) {
-        alert('Geolocation is not supported by your browser.');
-        return;
-    }
+    mapboxgl.accessToken = 'pk.eyJ1IjoicmluamVlIiwiYSI6ImNsdXQ0ZWRjNjBvZTkybG85dTcxNjFudXgifQ.wuMqiIb0vQfJz3-r-ylGCA';
+    map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11',
+        zoom: 12 // Initial zoom level
+    });
 
-    function success(position) {
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
-        console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
-        console.log(typeof callback); // Should log 'function'
-        if (typeof callback === 'function') {
-            callback(latitude, longitude);
-        } else {
-            console.error('callback is not a function');
-        }
-    }
-
-    function error() {
-        alert('Unable to retrieve your location.');
-    }
-
-    navigator.geolocation.getCurrentPosition(success, error);
-}
-
-function initMapAndFetchBreweries() {
-    getUserLocation((lat, lng) => {
-        showMap(lat, lng);
-        fetchBreweriesNearby(lat, lng);
+    map.on('load', function() {
+        setupMapControls();
+        getUserLocation(); // Fetch user location and update map
     });
 }
 
-function showBreweriesOnMap(breweries, lat, lng) {
-    // Assume `map` is globally accessible or passed into this function
+function getUserLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            setInitialMapPosition(latitude, longitude); // Update map position
+            fetchBreweriesNearLocation(latitude, longitude, map); // Optional: fetch nearby breweries
+        }, function(error) {
+            console.error("Error getting the user's location: ", error);
+            alert('Unable to retrieve your location.');
+        });
+    } else {
+        alert('Geolocation is not supported by your browser.');
+    }
+}
+
+function setInitialMapPosition(lat, lng) {
+    map.flyTo({ center: [lng, lat], zoom: 12 });
+}
+// Add map controls like navigation controls and directions
+function setupMapControls() {
+    map.addControl(new mapboxgl.NavigationControl());
+    map.addControl(new mapboxgl.GeolocateControl({
+        positionOptions: { enableHighAccuracy: true },
+        trackUserLocation: true,
+        showUserLocation: true
+    }), 'top-right');
+}
+
+// Fetch and display breweries near a location
+function displayBreweriesOnMap(breweries, map) {
     breweries.forEach(brewery => {
         if (brewery.latitude && brewery.longitude) {
+            const popupContent = `
+                <strong>${brewery.name}</strong><br>
+                <a href="${brewery.website_url}" target="_blank">Visit Website</a><br>
+                <button class="get-directions-btn" data-lat="${brewery.latitude}" data-lng="${brewery.longitude}">Get Directions</button>
+            `;
             new mapboxgl.Marker()
-                .setLngLat([parseFloat(brewery.longitude), parseFloat(brewery.latitude)])
-                .setPopup(new mapboxgl.Popup().setText(`${brewery.name}`))
+                .setLngLat([brewery.longitude, brewery.latitude])
+                .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(popupContent))
                 .addTo(map);
         }
     });
-}
-
-function showMap(lat, lng) {
-    if (map) return; //check if map is akready initialized
-    mapboxgl.accessToken = 'pk.eyJ1IjoicmluamVlIiwiYSI6ImNsdXQ0ZWRjNjBvZTkybG85dTcxNjFudXgifQ.wuMqiIb0vQfJz3-r-ylGCA'; // Replace with your actual Mapbox API access token
-
-    // Create a new map instance using Mapbox GL JS
-    map = new mapboxgl.Map({
-        container: 'map', // The HTML element ID where you want the map to appear
-        style: 'mapbox://styles/mapbox/streets-v11', // The style of the map you want to use
-        center: [lng, lat], // Starting position [longitude, latitude]
-        zoom: 12 // Starting zoom level
-    });
-    map.on('load', function() {
-        console.log("Map loaded:", map);  // Check if map is correctly initialized here
-        addMapControls();  // Add controls after the map is loaded
-        map.addSource('points', {
-            type: 'geojson',
-            data: {
-                type: 'FeatureCollection',
-                features: [{
-                    type: 'Feature',
-                    geometry: {
-                        type: 'Point',
-                        coordinates: [lng, lat],  // Example coordinates
-                        
-                    },
-                    properties: {
-                        title: 'Mapbox DC',
-                        icon: 'beer-11'
-                    }
-                }]
-            }
-        });
-    
-        // Add a layer to use the image to represent the data
-        map.addLayer({
-            id: 'points',
-            type: 'symbol',
-            source: 'points',
-            layout: {
-                'icon-image': '{icon}',  // Use the property 'icon' from the source's features
-                'icon-size': 1.5
-            }
-        });
-    });
-}
-
-
-function addMapControls() {
-    console.log(map); // Should not be undefined if everything is correct
-
-    var directions = new MapboxDirections({
-        accessToken: mapboxgl.accessToken,
-        unit: 'metric',
-        profile: 'mapbox/driving'
-    });
-
-    if (!map) {
-        console.error('Map is not initialized.');
-        return;
+      // Attach event listeners after map and markers are rendered
+      attachDirectionEventListeners(map);
     }
 
-    map.addControl(directions, 'top-left');
-    map.addControl(new mapboxgl.NavigationControl());
+function attachDirectionEventListeners(map) {
+        // Use event delegation to handle clicks on any 'get-directions-btn' within the map
+        map.getContainer().addEventListener('click', function(event) {
+            if (event.target.classList.contains('get-directions-btn')) {
+                const lat = parseFloat(event.target.getAttribute('data-lat'));
+                const lng = parseFloat(event.target.getAttribute('data-lng'));
+                getDirections(lat, lng);
+            }
+        });
+    }
+// Function to handle direction requests (assumes you have a setup to handle directions)
+function getDirections(lat, lng) {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            const startLat = position.coords.latitude;
+            const startLng = position.coords.longitude;
+            const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${startLat},${startLng}&destination=${lat},${lng}&travelmode=driving`;
+            window.open(googleMapsUrl, '_blank');
+        }, function(error) {
+            console.error("Error getting the user's location: ", error);
+            alert('Error getting location. Please ensure location services are enabled.');
+        });
+    } else {
+        alert("Geolocation is not supported by this browser.");
+    }
 }
 
 
-function fetchBreweriesNearby(lat, lng) {
-    const fetchUrl = `https://api.openbrewerydb.org/breweries?by_dist=${lat},${lng}&per_page=10`;
-    fetch(fetchUrl)
+
+
+
+// Example of fetching breweries based on a query
+function fetchBreweriesNearLocation(latitude, longitude, map) {
+    // Define the API endpoint with parameters for latitude, longitude, and number of results per page
+    const url = `https://api.openbrewerydb.org/breweries?by_dist=${latitude},${longitude}&per_page=10`;
+
+    // Fetch the breweries from the API
+    fetch(url)
         .then(response => response.json())
         .then(breweries => {
-            console.log("Received breweries:", breweries);
-            if (breweries.length > 0) {
-                breweries.forEach(brewery => {
-                    if (brewery.latitude && brewery.longitude) {
-                        new mapboxgl.Marker({
-                            // element: createMarkerElement('beer-11'),
-                            color: "#FF6347"
-                        })
-                        .setLngLat([brewery.longitude, brewery.latitude])
-                        .setPopup(new mapboxgl.Popup().setText(`${brewery.name} - ${brewery.type}`))
-                        .addTo(map);
-                    }
-                });
-            } else {
-                console.log('No breweries found near this location.');
-            }
+            console.log("Breweries near this location: ", breweries);
+            displayBreweriesOnMap(breweries, map);
         })
         .catch(error => console.error('Error fetching breweries:', error));
 }
 
-function createMarkerElement(iconName) {
-    const el = document.createElement('div');
-    el.className = 'marker';
-    el.style.backgroundImage = `url('mapbox://styles/mapbox/streets-v11/maki_icons/${iconName}.png')`;
-    el.style.width = '30px';
-    el.style.height = '30px';
-    return el;
-}
+
+
+// Initialization
+document.addEventListener('DOMContentLoaded', initializeMap);
 
 function handleFormSubmit(event) {
 
@@ -321,51 +286,16 @@ selectField.addEventListener('change', function(){
     }
 });
 
-document.getElementById('search-around-me-btn').addEventListener('click', function() {
-    if (!map) {
-        initMapAndFetchBreweries();
-    } else {
-        getUserLocation((lat, lng) => fetchBreweriesNearby(lat, lng));
-    }
-});
-
-
-
 searchBtn.addEventListener('click', function(event) {
     event.preventDefault();
     handleFormSubmit(event);
 });
-// Attach the event listener to your button
-document.getElementById('search-around-me-btn').addEventListener('click', function(event) {
-    event.preventDefault();
-    //getUserLocation();
-    let parameter = "by_dist"
-    fetchBreweryData(parameter);
-
-});
-
-
-    customModalForm.addEventListener('submit', function(event){
-        event.preventDefault();
-        if (ageInput.value >= 21) {
-            modal.style.display= 'none';
-        }
-    })
-
+function setupEventListeners() {
+    document.getElementById('search-around-me-btn').addEventListener('click', () => {
+        getUserLocation();
+    });
+}
 
 $(document).ready(function() {
-    if ($('#map').length > 0) {
-        console.log('Map container is ready.');
-        initMapAndFetchBreweries();
-    } else {
-        console.log('Map container is not found.');
-    }
-    localStorage.setItem('currentIndex', 0);
-    
-});
-
-
-
-document.addEventListener('DOMContentLoaded', function() {
-    getUserLocation();  // Automatically fetch and display the user's location on load
+    getUserLocation();
 });
