@@ -19,23 +19,18 @@ This is a group project for mapping out breweries and planning itineraries relat
 ## Acceptence Criteria
 
 User Story:
-As a full stack developer
-I want to create a site that uses https://www.openbrewerydb.org/ and a map API to 
-Show the nearest breweries to travelers
+As a full stack developer <br>
+I want to create a site that uses https://www.openbrewerydb.org/ and a map API to show the nearest breweries to travelers
 
-When i visit the website,
+When I visit the website,<br>
+
 Then 
 
-It's done when the site integrates the Open Brewery DB API to fetch brewery data based on the user's location.
-It's done when the site uses a map API to display the location of the nearest breweries to the user.
-It's done when the site allows travelers to input their location or automatically detects their location to show nearby breweries.
-It's done when the site displays relevant information about each brewery, such as name, address, type, and contact details.
-It's done when the site provides a responsive and user-friendly interface for travelers to easily view and interact with the brewery information on both desktop and mobile devices.
-
-### Amanda- CSS, HTML, Tailwind.css expert
-### Dan- Java Script, Merge conflict resolver
-### Rinjee- Java Script, Mapbox API expert
-
+It's done when the site integrates the Open Brewery DB API to fetch brewery data based on the user's location. <br>
+It's done when the site uses a map API to display the location of the nearest breweries to the user.<br>
+It's done when the site allows travelers to input their location or automatically detects their location to show nearby breweries.<br>
+It's done when the site displays relevant information about each brewery, such as name, address, type, and contact details.<br>
+It's done when the site provides a responsive and user-friendly interface for travelers to easily view and interact with the brewery information on both desktop and mobile devices.<br>
 
 ## Table of Contents
 
@@ -50,7 +45,8 @@ It's done when the site provides a responsive and user-friendly interface for tr
 
 ## Screenshots
 
-![Brewery Tracker](#)
+![Brewery Tracker](./assets/css/images/Screenshot%202024-04-18%20190848.png)
+![Brewery Tracker](./assets/css/images/Screenshot%202024-04-18%20190917.png)
 
 ## Links
 
@@ -75,9 +71,9 @@ It's done when the site provides a responsive and user-friendly interface for tr
 
 ## Contributing
 
-[Daniel Jones](github.com/djinjones)
-[Amanda Martin](github.com/amandajrmartin)
-[Rinjee Sherpa](github.com/RinjeeG)
+[Daniel Jones](github.com/djinjones) - Java Script, HTML, Merge conflict resolver <br>
+[Amanda Martin](github.com/amandajrmartin) - CSS, HTML, Tailwind.css expert <br>
+[Rinjee Sherpa](github.com/RinjeeG) - Java Script, Mapbox API expert <br>
 
 
 
