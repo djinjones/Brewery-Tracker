@@ -107,8 +107,14 @@ function attachDirectionEventListeners(map) {
 function getDirections(lat, lng) {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
-            const startLat = position.coords.latitude;
-            const startLng = position.coords.longitude;
+            let currentIndex = localStorage.getItem('currentIndex');
+            const breweryData = JSON.parse(localStorage.getItem('brewery-data'));
+            // if () {
+            //  lat = breweryData[currentIndex].latitude;
+            //  lng = breweryData[currentIndex].longitude;
+            // }
+           const startLat = position.coords.latitude;
+           const startLng = position.coords.longitude;
             const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${startLat},${startLng}&destination=${lat},${lng}&travelmode=driving`;
             window.open(googleMapsUrl, '_blank');
         }, function(error) {
@@ -127,7 +133,7 @@ function getDirections(lat, lng) {
 // Example of fetching breweries based on a query
 function fetchBreweriesNearLocation(latitude, longitude, map) {
     // Define the API endpoint with parameters for latitude, longitude, and number of results per page
-    const url = `https://api.openbrewerydb.org/breweries?by_dist=${latitude},${longitude}&per_page=10`;
+    const url = `https://api.openbrewerydb.org/breweries?by_dist=${latitude},${longitude}&per_page=15`;
 
     // Fetch the breweries from the API
     fetch(url)
